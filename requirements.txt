@@ -1,0 +1,6 @@
+django
+langchain
+python-dotenv
+python-decouple
+neo4j
+pandas

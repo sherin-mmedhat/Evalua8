@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  neo4j:
+    image: neo4j
+    container_name: my-neo4j-container
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ../data/profiling:/import  # Mount a volume for the import directory 
+    environment:
+      NEO4J_AUTH: neo4j/password  # Set your desired password
+    networks:
+      - neo4j-network  # If you want to use a Docker network
+
+  evalu8-app:
+    container_name: evalu8-app
+    build:
+      context: ..
+      dockerfile: Dockerfile  # Your application's Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - "../:/app"  
+    depends_on:
+      - neo4j
+    networks:
+      - neo4j-network  # If you want your app to communicate with Neo4j on the same network
+
+networks:
+  neo4j-network:
+    driver: bridge
