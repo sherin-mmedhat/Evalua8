@@ -44,12 +44,6 @@ CREATE (:Employee {
  MATCH (e:Employee {name: 'Yara'}), (s:Squad {name: '.NET Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Esraa'}), (s:Squad {name: '.NET Squad'})
- CREATE (e)-[:MEMBER_OF]->(s);
-
- MATCH (e:Employee {name: 'Mai'}), (s:Squad {name: '.NET Squad'})
- CREATE (e)-[:MEMBER_OF]->(s);
-
  // Connect Employees to Team
  MATCH (e:Employee {name: 'Hadeer'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
