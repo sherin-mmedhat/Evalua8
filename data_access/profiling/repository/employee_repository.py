@@ -1,4 +1,4 @@
-from neo4j_connection import Neo4jConnector
+from ..neo4j_connection import Neo4jConnector
 
 from decouple import config
 from neo4j import GraphDatabase
@@ -13,14 +13,13 @@ def get_employee_details(employee_id):
        RETURN e AS employee, COLLECT(DISTINCT p.name) AS projects, COLLECT(DISTINCT s.name) AS squads
         """
     employee_data = connector.find_by(query,{'employeeId':employee_id})
-    
     connector.close()
     if employee_data:
         return employee_data
     else:
         return None
 
-def get_employees_hirerachy():
+def get_employees_hierarchy():
 
     connector = Neo4jConnector()
     connector.connect()
@@ -40,7 +39,8 @@ def get_employees_hirerachy():
     else:
         return None
 
-def get_employees_to_evaluate(evaluatorId):
+def get_employees_to_evaluate(evaluator_id):
+    
     connector = Neo4jConnector()
     connector.connect()
     query =  """
@@ -54,13 +54,13 @@ def get_employees_to_evaluate(evaluatorId):
         RETURN employee.id AS employeeId, employee.name AS employeeName, mentees,colleagues,
         COLLECT(DISTINCT mentor {.*}) AS mentors
         """
-    employee_data = connector.find_all(query,{'evaluatorId':evaluatorId})
-    
-    connector.close()
+    employee_data = connector.find_all(query,{'evaluatorId':evaluator_id})
+    connector.close()   
     if employee_data:
         return employee_data
     else:
         return None
+
 
 
 

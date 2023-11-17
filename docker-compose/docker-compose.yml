@@ -27,7 +27,17 @@ services:
       - neo4j
     networks:
       - neo4j-network  # If you want your app to communicate with Neo4j on the same network
-
+  evalu8-web:
+    container_name: evalu8-web
+    build:
+      context: ..
+      dockerfile: Dockerfile_web 
+    volumes:
+      - "../:/app" 
+    ports:
+      - "5000:5000"
+    networks:
+      - neo4j-network  # If you want your app to communicate with Neo4j on the same network  
 networks:
   neo4j-network:
     driver: bridge
