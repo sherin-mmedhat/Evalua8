@@ -38,6 +38,16 @@ services:
       - "5000:5000"
     networks:
       - neo4j-network  # If you want your app to communicate with Neo4j on the same network  
+  mongodb:
+    image: mongo:latest
+    container_name: evalu8-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data_access/kpi/data/db:/data/db
+    command: mongod --dbpath /data/db
+    networks:
+      - neo4j-network
 networks:
   neo4j-network:
     driver: bridge
