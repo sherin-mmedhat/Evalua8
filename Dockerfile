@@ -21,6 +21,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Install the Neo4j Python driver
 RUN pip install --no-cache-dir neo4j==4.0.0
+RUN pip install --no-cache-dir pymongo
 
 # Expose the port on which Jupyter will run
 EXPOSE 8888
