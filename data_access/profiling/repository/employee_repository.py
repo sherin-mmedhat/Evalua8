@@ -62,6 +62,17 @@ def get_employees_to_evaluate(evaluator_id):
         return None
 
 
-
-
-    
+def create_feedback_relation(employee_id, feedback_id):
+    connector = Neo4jConnector()
+    connector.connect()
+    query = """
+    MATCH (e:Employee {id: $employee_id}),(f:Feedback{id : $feedback_id})
+    CREATE (e)-[:HAVE]->(f)
+    RETURN f
+    """
+    employee_feedback_data = connector.find_by(query, {'employee_id': employee_id, 'feedback_id': feedback_id})
+    connector.close()
+    if employee_feedback_data:
+        return employee_feedback_data
+    else:
+        return None
