@@ -5,3 +5,5 @@
 .env
 .idea/
 /data/kpi/data/
+
+models/
