@@ -12,19 +12,19 @@ db=client.KPI
 # Use the KPI collection
 KPI = db.kpi_collection
 
-# # Delte all for testing, multi run
-# result = KPI.delete_many({})
+# Delte all for testing, multi run
+result = KPI.delete_many({})
 
 # Specify the path to your CSV file
 csv_file_path = 'data/profiling/KPI.csv'
 
-# # Read data from CSV file
-# with open(csv_file_path, 'r') as csv_file:
-#     csv_reader = csv.DictReader(csv_file)
-#     data_to_insert = list(csv_reader)
+# Read data from CSV file
+with open(csv_file_path, 'r') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
+    data_to_insert = list(csv_reader)
 
-# # Insert data into MongoDB
-# result = KPI.insert_many(data_to_insert)
+# Insert data into MongoDB
+result = KPI.insert_many(data_to_insert)
 
 # Find documents where ...
 projection = {'KPI': 1, '_id': 0}
