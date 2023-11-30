@@ -1,12 +1,9 @@
 import openai
 import json
 
-openai.api_key= ("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")
+openai.api_key= ("YOUR_API_KEY")
 
 class ReportingService: 
-    def __init__(self):
-        self.api_key= ("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")
-          
     def generate_report(self, employee_name, feedback):
           responses = []
           prompts = [
