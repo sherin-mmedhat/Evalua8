@@ -26,22 +26,22 @@ CREATE (:Employee {
  CREATE (mentor)-[:MENTOR]->(mentee);
 
  // Connect Employees to Squads
- MATCH (e:Employee {name: 'Hadeer'}), (s:Squad {name: '.NET Squad'})
+ MATCH (e:Employee {name: 'Hadeer'}), (s:Squad {name: 'PPO Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Ziad'}), (s:Squad {name: '.NET Squad'})
+ MATCH (e:Employee {name: 'Ziad'}), (s:Squad {name: 'PPO Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Sara'}), (s:Squad {name: '.NET Squad'})
+ MATCH (e:Employee {name: 'Sara'}), (s:Squad {name: 'PPO Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Huda'}), (s:Squad {name: '.NET Squad'})
+ MATCH (e:Employee {name: 'Hoda'}), (s:Squad {name: 'PPO Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Menna'}), (s:Squad {name: '.NET Squad'})
+ MATCH (e:Employee {name: 'Menna'}), (s:Squad {name: 'PPO Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Yara'}), (s:Squad {name: '.NET Squad'})
+ MATCH (e:Employee {name: 'Yara'}), (s:Squad {name: 'PPO Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
  // Connect Employees to Team
@@ -54,10 +54,10 @@ CREATE (:Employee {
  MATCH (e:Employee {name: 'Sara'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
- MATCH (e:Employee {name: 'Huda'}), (t:Team {name: 'Engineering Team'})
+ MATCH (e:Employee {name: 'Passant'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
- MATCH (e:Employee {name: 'Menna'}), (t:Team {name: 'Quality Team'})
+ MATCH (e:Employee {name: 'Hoda'}), (t:Team {name: 'Quality Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
  MATCH (e:Employee {name: 'Yara'}), (t:Team {name: 'Product Team'})
@@ -70,5 +70,9 @@ CREATE (:Employee {
  CREATE (e)-[:BELONGS_TO]->(t);
 
 // Connect Squads to Projects
-MATCH (s:Squad {name: '.NET Squad'}), (p:Project {name: 'BBO'})
+MATCH (s:Squad {name: 'PPO Squad'}), (p:Project {name: 'PPO'})
 CREATE (s)-[:OWNS]->(p);
+
+CREATE (f:Feedback {id: toInteger(1), feedback: "Feed back" ,evaluator_id : 2});
+MATCH (e:Employee {id: 5}) , (f:Feedback{evaluator_id: 2})
+CREATE (e)-[:HAVE]->(f);

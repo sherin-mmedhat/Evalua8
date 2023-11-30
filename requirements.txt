@@ -7,4 +7,5 @@ fastapi
 pydantic
 uvicorn
 pymango
+openai
 sentence_transformers

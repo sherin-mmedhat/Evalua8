@@ -7,3 +7,4 @@
 /data/kpi/data/
 
 models/
+*.pyc
