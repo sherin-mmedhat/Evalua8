@@ -1,8 +1,7 @@
 import openai
 
 # Get the OpenAI API key by signing up on OpenAI.
-openai.api_key = "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"
-
+openai.api_key = 'YOUR_API_KEY'
 class CategorizingService: 
     def categorize_text(self, categories, text_samples):
         labels = []
