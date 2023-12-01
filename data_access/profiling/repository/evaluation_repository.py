@@ -5,10 +5,10 @@ def get_evaluation(employee_id, evaluator_id):
     connector = Neo4jConnector()
     connector.connect()
     query = """
-       MATCH (e:Evaluation {employee_id: $employeeId, evaluator_id: $evaluatorId })
+       MATCH (e:Evaluation {employee_id: $employee_id, evaluator_id: $evaluator_id })
        RETURN COLLECT(properties(e)) AS evaluations;
         """
-    evaluation_data = connector.find_by(query, {'employeeId': employee_id, 'evaluatorId': evaluator_id})
+    evaluation_data = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id})
     connector.close()
     if evaluation_data:
         return evaluation_data
