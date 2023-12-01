@@ -7,4 +7,5 @@
 /data/kpi/data/
 
 models/
+__pycache__/
 *.pyc
