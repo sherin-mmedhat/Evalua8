@@ -1,4 +1,7 @@
- // Import Employees
+MATCH (n)
+DETACH DELETE n;
+     
+// Import Employees
 LOAD CSV WITH HEADERS FROM 'file:///employees.csv' AS row
 CREATE (:Employee {
   id: toInteger(row.id),
@@ -76,3 +79,14 @@ CREATE (s)-[:OWNS]->(p);
 CREATE (f:Feedback {id: toInteger(1), feedback: "Feed back" ,evaluator_id : 2});
 MATCH (e:Employee {id: 5}) , (f:Feedback{evaluator_id: 2})
 CREATE (e)-[:HAVE]->(f);
+
+
+CREATE (:Evaluation {id: toInteger(1), question: "Consistently delivering high-quality work.", kpi: "Productivity" ,is_sufficient : false, score: 0, evaluator_id:toInteger(1),employee_id:toInteger(2)});
+
+CREATE (:Evaluation {id: toInteger(2), question: "Managing multiple tasks and responsibilities effectively.", kpi: "Productivity" ,is_sufficient : false, score: 0, evaluator_id:toInteger(1),employee_id:toInteger(2)});
+
+CREATE (:Evaluation {id: toInteger(3), question: "Contributing to team discussions and decisions constructively.", kpi: "Teamwork" ,is_sufficient : false, score: 0, evaluator_id:toInteger(1),employee_id:toInteger(2)});
+
+CREATE (:Evaluation {id: toInteger(4), question: "Collaborating effectively with team members and demonstrating a positive attitude.", kpi: "Teamwork" ,is_sufficient : false, score: 0, evaluator_id:toInteger(1),employee_id:toInteger(2)});
+
+
