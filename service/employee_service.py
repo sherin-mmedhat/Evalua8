@@ -20,4 +20,9 @@ class EmployeeService:
     def get_employees_to_evaluate(self, evaluator_id: int):
          employees_to_evaluate_json = employee_repository.get_employees_to_evaluate(evaluator_id)
          print(employees_to_evaluate_json) 
-         return employees_to_evaluate_json        
+         return employees_to_evaluate_json
+
+    def get_employees_by_evaluator_feedbacks(self,employee_id: int , evaluator_id: int):
+         employees_feedbacks = employee_repository.get_employee_feedbacks(employee_id,evaluator_id)
+         print(employees_feedbacks)
+         return employees_feedbacks

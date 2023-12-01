@@ -38,3 +38,7 @@ def get_employees_to_evaluate(evaluator_id: int):
         return employee_to_evaluate
     else:
         raise HTTPException(status_code=404, detail="no employees to evaluate")
+
+@router.get("/api/employees/{employee_id}/evaluators/{evaluator_id}/feedbacks")
+def get_feedbacks(evaluator_id: int, employee_id: int):
+    return service.get_employees_by_evaluator_feedbacks(employee_id,evaluator_id)
