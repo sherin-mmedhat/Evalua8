@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, ListFlowable, ListItem, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
+from matplotlib.patches import Patch
 
 from io import BytesIO
 import json
@@ -20,34 +21,73 @@ service = ReportingService()
 
 def generate_plots(employee_data):
     buffers = []
+    attribute_stats = []
+
     for attribute in ['Productivity', 'Teamwork']:
-        fig, ax = plt.subplots(figsize=(5, 4))
-        ax.plot(employee_data['Date'], employee_data[attribute], marker='o', linestyle='-')
+        fig, ax = plt.subplots(figsize=(6, 4))
+
+        # Calculate statistics
+        max_value = employee_data[attribute].max()
+        min_value = employee_data[attribute].min()
+        avg_value = employee_data[attribute].mean()
+
+        attribute_stats.append({
+            'Attribute': attribute,
+            'Max Value': max_value,
+            'Min Value': min_value,
+            'Average Value': avg_value
+        })
+
+        # Plot horizontal bars for max, min, and average values
+        bar_heights = [max_value, min_value, avg_value]
+        color_mapping = ['red' if value <= 3 else 'orange' if 4 <= value <= 6 else 'green' for value in bar_heights]
+
+        # Adjust bar_width to reduce the size of the bars
+        bar_width = 0.5
+
+        bars = ax.barh(['Max', 'Min', 'Average'], bar_heights, color=color_mapping, height=bar_width)
+
+        # Annotate the bars with values inside the bars
+        for bar, value in zip(bars, bar_heights):
+            bar_width = bar.get_width()
+            bar_center = bar.get_x() + bar_width / 2
+            ax.text(bar_center, bar.get_y() + bar.get_height() / 2, f'{value:.2f}', ha='center', va='center', color='black')
+
+        # Create a custom legend
+        legend_elements = [
+            Patch(color='red', label='0-3'),
+            Patch(color='orange', label='4-6'),
+            Patch(color='green', label='7-10')
+        ]
+
+        ax.legend(handles=legend_elements, loc='upper right')
+
         ax.set_title(attribute)
-        ax.set_xlabel('Date')
-        ax.set_ylabel('Score')
+        ax.set_xlabel('Score')
+        ax.set_xlim(0, 10)
+        ax.set_ylim(-0.5, 2.5)  # Adjust ylim to reduce empty space
+
         buffer = BytesIO()
         fig.savefig(buffer, format="png")
         buffers.append(buffer)
 
     plot_images = [Image(buffer) for buffer in buffers]
+    plt.close('all')
     return plot_images, buffers
 
 def generate_dummy_employee_data(employee_id):
-    # Generate dummy data for an employee
-    dates = [datetime(2023, 1, 1) + timedelta(days=i*180) for i in range(3)]
-    productivity = np.random.uniform(1, 10, size=3)
+    # Generate dummy data for an employee with three values for Productivity:
+    # One less than 5, exactly 5, and one more than 5
+    productivity_values = [3, 5, 8]
     teamwork = np.random.uniform(1, 10, size=3)
 
     data = {
         'Employee_ID': [employee_id] * 3,
-        'Date': dates,
-        'Productivity': productivity,
+        'Productivity': productivity_values,
         'Teamwork': teamwork
     }
 
     employee_data = pd.DataFrame(data)
-    employee_data['Date'] = employee_data['Date'].dt.strftime('%Y-%m-%d')
     return employee_data
 
 def generate_pdf(data):
