@@ -29,51 +29,39 @@ CREATE (:Employee {
  CREATE (mentor)-[:MENTOR]->(mentee);
 
  // Connect Employees to Squads
- MATCH (e:Employee {name: 'Hadeer'}), (s:Squad {name: 'PPO Squad'})
+ MATCH (e:Employee {name: 'Sherin'}), (s:Squad {name: 'Evalu Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Ziad'}), (s:Squad {name: 'PPO Squad'})
+ MATCH (e:Employee {name: 'Jolie'}), (s:Squad {name: 'Evalu Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Sara'}), (s:Squad {name: 'PPO Squad'})
+ MATCH (e:Employee {name: 'Sara'}), (s:Squad {name: 'Evalu Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Hoda'}), (s:Squad {name: 'PPO Squad'})
+ MATCH (e:Employee {name: 'Magdy'}), (s:Squad {name: 'Evalu Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
- MATCH (e:Employee {name: 'Menna'}), (s:Squad {name: 'PPO Squad'})
- CREATE (e)-[:MEMBER_OF]->(s);
-
- MATCH (e:Employee {name: 'Yara'}), (s:Squad {name: 'PPO Squad'})
+ MATCH (e:Employee {name: 'Nouran'}), (s:Squad {name: 'Evalu Squad'})
  CREATE (e)-[:MEMBER_OF]->(s);
 
  // Connect Employees to Team
- MATCH (e:Employee {name: 'Hadeer'}), (t:Team {name: 'Engineering Team'})
+ MATCH (e:Employee {name: 'Sherin'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
- MATCH (e:Employee {name: 'Ziad'}), (t:Team {name: 'Engineering Team'})
+ MATCH (e:Employee {name: 'Jolie'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
  MATCH (e:Employee {name: 'Sara'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
- MATCH (e:Employee {name: 'Passant'}), (t:Team {name: 'Engineering Team'})
+ MATCH (e:Employee {name: 'Magdy'}), (t:Team {name: 'Engineering Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
- MATCH (e:Employee {name: 'Hoda'}), (t:Team {name: 'Quality Team'})
- CREATE (e)-[:BELONGS_TO]->(t);
-
- MATCH (e:Employee {name: 'Yara'}), (t:Team {name: 'Product Team'})
- CREATE (e)-[:BELONGS_TO]->(t);
-
- MATCH (e:Employee {name: 'Esraa'}), (t:Team {name: 'Product Team'})
- CREATE (e)-[:BELONGS_TO]->(t);
-
- MATCH (e:Employee {name: 'Mai'}), (t:Team {name: 'Quality Team'})
+ MATCH (e:Employee {name: 'Nouran'}), (t:Team {name: 'Product Team'})
  CREATE (e)-[:BELONGS_TO]->(t);
 
 // Connect Squads to Projects
-MATCH (s:Squad {name: 'PPO Squad'}), (p:Project {name: 'PPO'})
+MATCH (s:Squad {name: 'Evalu Squad'}), (p:Project {name: 'Evalu'})
 CREATE (s)-[:OWNS]->(p);
 
 CREATE (f:Feedback {id: toInteger(1), feedback: "Feed back" ,evaluator_id : 2});

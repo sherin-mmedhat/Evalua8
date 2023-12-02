@@ -1,9 +1,6 @@
 id,name,level,job_title,department
-1,Hadeer,Level-5,Senior Software Engineer,Engineering
-2,Ziad,Level-2,Software Engineer 1,Engineering
+1,Sherin,Level-5,Senior Software Engineer,Engineering
+2,Jolie,Level-1,Software Engineer 1,Engineering
 3,Sara,Level-3,Front-end Software Engineer 2,Engineering
-4,Passant,Level-2,Front-end Software Engineer 1,Engineering
-5,Hoda,Level-2,Quality Control Engineer 2,Quality
-6,Yara,Level-3,Product Manager,Product
-7,Esraa,Level-7,Product Director,Product
-8,Mai,Level-6,Quality Team Lead,Quality
+4,Magdy,Level-1,Software Engineer 1,Engineering
+5,Nouran,Level-4,Product Manager,Product
