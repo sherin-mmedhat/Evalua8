@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from entrypoint import Employees
 from entrypoint import Kpis
 from entrypoint import Feedbacks
+from entrypoint import Reports
 
 app = FastAPI()
 
@@ -21,6 +22,7 @@ app.add_middleware(
 app.include_router(Employees.router)
 app.include_router(Kpis.router)
 app.include_router(Feedbacks.router)
+app.include_router(Reports.router)
 
 @app.get("/")
 def read_root():

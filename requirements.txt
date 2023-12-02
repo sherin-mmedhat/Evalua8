@@ -9,3 +9,6 @@ uvicorn
 pymango
 openai
 sentence_transformers
+reportlab
+pandas
+matplotlib
