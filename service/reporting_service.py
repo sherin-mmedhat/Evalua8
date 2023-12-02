@@ -1,19 +1,25 @@
+from model.employee import Employee
 import openai
 import json
+from decouple import config
 
 from data_access.profiling.repository import employee_repository
 from service.employee_service import EmployeeService
-from service.reporting_service import ReportingService
-openai.api_key= ("YOUR_API_KEY")
+
 
 class ReportingService: 
+
+    def __init__(self):
+        openai.api_key= config('OPEN_API_KEY')
+
     def generate_report(self, employee_id):
 
 
-          employee = employee_repository.get_employee_details(employee_id)
+          employee_json = employee_repository.get_employee_details(employee_id)
+          employee = Employee.from_json(employee_json)
           feedbacks = employee_repository.get_employee_feedbacks(employee_id)
           employee_name =employee.name
-          feedback= [feedback_object.text for feedback_object in feedbacks]
+          feedback= [feedback_object for feedback_object in feedbacks['feedbacks']]
           responses = []
           prompts = [
               f"For {employee_name}. What are his strengths based on the feedback? {feedback}. Give me 2 points ",
@@ -46,9 +52,9 @@ feedback_data = [
     "John tends to procrastinate on tasks and misses deadlines.",
     "John should prioritize time management and meet deadlines consistently."
 ]
-reporting_service = ReportingService()
+# reporting_service = ReportingService()
 
-report_json = reporting_service.generate_report(employee_name, "\n".join(feedback_data))
+# report_json = reporting_service.generate_report(2)
 
 # Print the JSON report
-print(json.dumps(report_json, indent=2))
+# print(json.dumps(report_json, indent=2))

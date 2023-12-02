@@ -23,7 +23,7 @@ class EvaluationService:
         evaluationList = EvaluationList(**evaluations_data)
         questions_list = [evaluation.question for evaluation in evaluationList.evaluations]
 
-        score_response = self.give_rates_for_questions(feedbacks, ["Productivity,Teamwork"], questions_list)
+        score_response = self.give_rates_for_questions(feedbacks, questions_list)
 
         print(score_response)
         for score_object in score_response:
@@ -32,7 +32,7 @@ class EvaluationService:
             evaluation_repository.update_evaluation_score(employee_id, evaluator_id, score_object["question"],
                                                           score_object["score"])
 
-        return [validated_object.suggestions for validated_object in score_response]
+        return self.get_evaluation(evaluator_id, employee_id)
 
     def give_rates_for_questions(self, feedbacks, questions):
 
