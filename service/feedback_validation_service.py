@@ -1,9 +1,10 @@
+from itertools import chain
+
 from decouple import config
 from langchain.chat_models import ChatOpenAI
 from langchain.llms.openai import OpenAI
 from langchain.prompts import PromptTemplate, ChatPromptTemplate
 import json
-
 from data_access.profiling.repository import employee_repository
 from data_access.profiling.repository import evaluation_repository
 # from model.feedback_metadata import FeedbackMetadata
@@ -36,8 +37,7 @@ class FeedbackValidationService:
              print(validated_object["question"])
              print(validated_object["is_sufficient"])
              evaluation_repository.update_evaluation_validation(employee_id,evaluator_id,validated_object["question"] , validated_object["is_sufficient"])
-
-        return [validated_object.suggestions for validated_object in validated_response]
+        return list(chain.from_iterable([validated_object["suggestions"] for validated_object in validated_response]))
     def are_feedbacks_sufficient(self, feedbacks, kpis, questions):
 
         llm_model = "gpt-3.5-turbo"
