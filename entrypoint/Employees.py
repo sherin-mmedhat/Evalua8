@@ -35,7 +35,7 @@ def get_employees_to_evaluate(evaluator_id: int):
     employee_to_evaluate = service.get_employees_to_evaluate(evaluator_id)
     if employee_to_evaluate:
         
-        return employee_to_evaluate
+        return employee_to_evaluate[0]
     else:
         raise HTTPException(status_code=404, detail="no employees to evaluate")
 
