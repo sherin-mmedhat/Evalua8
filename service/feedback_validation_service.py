@@ -1,12 +1,15 @@
 from decouple import config
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain.llms.openai import OpenAI
+from langchain.prompts import PromptTemplate, ChatPromptTemplate
 import json
 
 from data_access.profiling.repository import employee_repository
 from data_access.profiling.repository import evaluation_repository
 # from model.feedback_metadata import FeedbackMetadata
 from model.evaluation import EvaluationList
+
+from langchain.output_parsers import ResponseSchema, StructuredOutputParser, PydanticOutputParser
 
 
 # from langchain.llms import OpenAI
@@ -27,46 +30,61 @@ class FeedbackValidationService:
         questions_list = [evaluation.question for evaluation in evaluationList.evaluations]
 
         validated_response = self.are_feedbacks_sufficient(feedbacks, ["Productivity,Teamwork"], questions_list)
-        print(validated_response)
-        validated_list = json.loads(validated_response)
-        # for validated_object in validated_list:
-        #     evaluation_repository.update_evaluation_score(employee_id,evaluator_id,validated_object["question"],"is_sufficient", validated_object["is_sufficient"])
-        # return validated_list
-        return validated_list
 
+        print(validated_response)
+        for validated_object in validated_response:
+             print(validated_object["question"])
+             print(validated_object["is_sufficient"])
+             evaluation_repository.update_evaluation_score(employee_id,evaluator_id,validated_object["question"] , validated_object["is_sufficient"])
+
+        return evaluation_repository.get_evaluation(employee_id,evaluator_id)
     def are_feedbacks_sufficient(self, feedbacks, kpis, questions):
 
-        template = f"""You are an expert in performance evaluation. Your task is to analyze evaluator feedback for employees to ensure its clarity, specificity, and informativeness, addressing the KPIs and questions provided. Evaluate each question and ensur the feedback contains sufficient information to answer.
-Inputs:
-- Feedback: A list of evaluator feedback [{', '.join(feedbacks)}].
-- KPI Categories: A list of KPI categories {[', '.join(kpis)]}.
-- Questions: A list of questions {[', '.join(questions)]}.
+        llm_model = "gpt-3.5-turbo"
 
-Format the output as a JSON list with the following keys:
-- "question": Each question from the given questions.
-- "is_sufficient": Boolean indicating whether any feedback is sufficient to answer the question.
-- "suggestions": Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.
+        # x communicated well when there was an issue and was very constructive to resolve the issue, addresed many suggested answer and reached the optimal one
+        # x is not communicating well, when y asked him to check his emails he answered rudly and he doesnt have time , while this email is urgently need reply and he is very late replying for almost 1 week, he is not helpful person to his team and always get away when asked to help others,v in his team asked him to push the code he ignored his request causing v to not able to finish as his task depends on x changes
+        response_schemas = [
+            ResponseSchema(
+                name="response",
+                description="""array of 10 object contains question,is_sufficient and Suggestions in the following format: [
+            {{ "question": string // Each question from the given questions.', "is_sufficient": boolean // Boolean indicating whether any feedback is sufficient to answer the question.',  ,"suggestions": [string] // Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.' }}
+        ]
+        """,
+            )
+        ]
 
-The response list will depend on the number of questions.
-"""
+        feedbacks_str = ', '.join(feedbacks)
+        kpis_str = ', '.join(kpis)
+        questions_str = ', '.join(questions)
 
-        prompt_template = ChatPromptTemplate.from_template(template)
-        messages = prompt_template.format_messages(feedbacks=feedbacks, kpis=kpis, questions=questions)
-        chat = ChatOpenAI(temperature=0.3, model="gpt-3.5-turbo", openai_api_key=self._open_Api_key)
+        output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
+        format_instructions = output_parser.get_format_instructions().replace(
+            '"response": string', '"response": array of objects'
+        )
+        template_string = """Analyze the employee feedback for clarity, specificity, and informativeness, addressing the KPIs and the questions given. Analyze each question against each feedback and check if the feedback covers the answer to the questions given, even in a negative context
+            Inputs:
+            - Feedback: A list of evaluator feedback {feedbacks_str}.
+            - KPI Categories: A list of KPI categories {kpis_str}.
+            - Questions: A list of questions {questions_str}.
+    
+            Format the response output as of JSON array, having the following keys:
+            {format_instructions}
+            The response list will depend on the number of questions.
+            """
+
+        prompt_template = ChatPromptTemplate.from_template(template_string)
+
+        messages = prompt_template.format_messages(feedbacks_str=feedbacks_str, kpis_str=kpis_str, questions_str=questions_str,
+                                                  format_instructions=format_instructions)
+
+        chat = ChatOpenAI(temperature=0.0, model="gpt-3.5-turbo", openai_api_key=self._open_Api_key)
         response = chat(messages)
-        print(response.content)
-        # prompt = PromptTemplate(template = template)
-        # #prompt_formated= prompt.format(feedbacks=feedbacks, kpis= kpis, questions= questions)
-        # # chain1 = LLMChain(llm=llm,prompt=prompt_formated)
-        # # chain1.run(feedbacks,kpis,questions)
-        # print(f"LLM Output: {llm(prompt)}")
-        # response = self.get_completion(prompt)
-        # print(response)
-        # if response and response.choices[0]:
-        #    return response.choices[0].message.content
-        # else: 
-        #   return None
+
         if response and response.content:
-            return response.content
+            output_dict = output_parser.parse(response.content)
+            print(output_dict)
+            print(output_dict.get('response'))
+            return output_dict.get('response')
         else:
-            return None
+         return None

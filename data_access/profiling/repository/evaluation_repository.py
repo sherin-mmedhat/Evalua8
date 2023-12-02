@@ -16,15 +16,16 @@ def get_evaluation(employee_id, evaluator_id):
         return None
 
 #can be score or isSufficient
-def update_evaluation_score(employee_id, evaluator_id, question, property, value):
+def update_evaluation_score(employee_id, evaluator_id, question, is_sufficient):
     connector = Neo4jConnector()
     connector.connect()
     query = """
-          MATCH (e:Evaluation {employeeId: '$employee_id', evaluator_id:'$evaluator_id' , question: '$question'})
-          SET  e[$property] = $value'
+          MATCH (e:Evaluation {employee_id:$employee_id , evaluator_id: $evaluator_id , question: $question})
+          SET e.is_sufficient = toString($is_sufficient)
+          return e;
            """
-    evaluation_data = connector.find_by(query, {'employeeId': employee_id, 'evaluatorId': evaluator_id,
-                                                'question': question, 'property': property, 'value': value })
+    evaluation_data = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id,
+                                                'question': question, 'is_sufficient': is_sufficient })
     connector.close()
     if evaluation_data:
         return evaluation_data

@@ -4,9 +4,10 @@ from typing import List, Dict, Optional
 class Evaluation(BaseModel):
     id: int
     question:  str
-    kpi:str
-    is_sufficient: bool
-    score: int
+    kpi:str = None
+    is_sufficient: str
+    suggestions: List[str] = None
+    score: int = None
     evaluator_id: int
     employee_id: int
     
