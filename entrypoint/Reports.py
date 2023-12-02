@@ -55,9 +55,9 @@ def generate_plots(employee_data):
 
         # Create a custom legend
         legend_elements = [
-            Patch(color='red', label='0-3'),
-            Patch(color='orange', label='4-6'),
-            Patch(color='green', label='7-10')
+            Patch(color='red', label='Critical'),
+            Patch(color='orange', label='Neutral'),
+            Patch(color='green', label='Excellent')
         ]
 
         ax.legend(handles=legend_elements, loc='upper right')
