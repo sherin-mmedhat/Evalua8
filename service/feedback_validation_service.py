@@ -22,7 +22,7 @@ class FeedbackValidationService:
 
     def validate_feedbacks(self, employee_id, evaluator_id):
 
-        feedbacks = employee_repository.get_employee_feedbacks(employee_id, evaluator_id)
+        feedbacks = employee_repository.get_employee_feedbacks_by_evaluator(employee_id, evaluator_id)
         print(feedbacks)
         evaluations_data = evaluation_repository.get_evaluation(employee_id, evaluator_id)
 
@@ -35,9 +35,9 @@ class FeedbackValidationService:
         for validated_object in validated_response:
              print(validated_object["question"])
              print(validated_object["is_sufficient"])
-             evaluation_repository.update_evaluation_score(employee_id,evaluator_id,validated_object["question"] , validated_object["is_sufficient"])
+             evaluation_repository.update_evaluation_validation(employee_id,evaluator_id,validated_object["question"] , validated_object["is_sufficient"])
 
-        return evaluation_repository.get_evaluation(employee_id,evaluator_id)
+        return [validated_object.suggestions for validated_object in validated_response]
     def are_feedbacks_sufficient(self, feedbacks, kpis, questions):
 
         llm_model = "gpt-3.5-turbo"
@@ -47,7 +47,7 @@ class FeedbackValidationService:
         response_schemas = [
             ResponseSchema(
                 name="response",
-                description="""array of 10 object contains question,is_sufficient and Suggestions in the following format: [
+                description="""array contains question,is_sufficient and Suggestions in the following format: [
             {{ "question": string // Each question from the given questions.', "is_sufficient": boolean // Boolean indicating whether any feedback is sufficient to answer the question.',  ,"suggestions": [string] // Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.' }}
         ]
         """,
@@ -62,7 +62,7 @@ class FeedbackValidationService:
         format_instructions = output_parser.get_format_instructions().replace(
             '"response": string', '"response": array of objects'
         )
-        template_string = """Analyze the employee feedback for clarity, specificity, and informativeness, addressing the KPIs and the questions given. Analyze each question against each feedback and check if the feedback covers the answer to the questions given, even in a negative context
+        template_string = """Analyze the employee feedback for clarity, specificity, and informativeness, addressing the questions given. Analyze each question against each feedback and check if the feedback covers the answer to the questions given, even in a negative context
             Inputs:
             - Feedback: A list of evaluator feedback {feedbacks_str}.
             - KPI Categories: A list of KPI categories {kpis_str}.
@@ -78,7 +78,7 @@ class FeedbackValidationService:
         messages = prompt_template.format_messages(feedbacks_str=feedbacks_str, kpis_str=kpis_str, questions_str=questions_str,
                                                   format_instructions=format_instructions)
 
-        chat = ChatOpenAI(temperature=0.0, model="gpt-3.5-turbo", openai_api_key=self._open_Api_key)
+        chat = ChatOpenAI(temperature=0.0, model=llm_model, openai_api_key=self._open_Api_key)
         response = chat(messages)
 
         if response and response.content:

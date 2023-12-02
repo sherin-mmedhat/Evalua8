@@ -1,10 +1,19 @@
 import openai
 import json
 
+from data_access.profiling.repository import employee_repository
+from service.employee_service import EmployeeService
+from service.reporting_service import ReportingService
 openai.api_key= ("YOUR_API_KEY")
 
 class ReportingService: 
-    def generate_report(self, employee_name, feedback):
+    def generate_report(self, employee_id):
+
+
+          employee = employee_repository.get_employee_details(employee_id)
+          feedbacks = employee_repository.get_employee_feedbacks(employee_id)
+          employee_name =employee.name
+          feedback= [feedback_object.text for feedback_object in feedbacks]
           responses = []
           prompts = [
               f"For {employee_name}. What are his strengths based on the feedback? {feedback}. Give me 2 points ",

@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-# from service.reporting_service import ReportingService
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, ListFlowable, ListItem, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet
+
 from io import BytesIO
 import json
 import matplotlib.pyplot as plt
@@ -11,9 +11,12 @@ from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 
+from service.reporting_service import ReportingService
+
 router = APIRouter()
 
-# service = ReportingService()
+
+service = ReportingService()
 
 def generate_plots(employee_data):
     buffers = []
@@ -107,6 +110,8 @@ def generate_pdf(data):
 
 @router.get("/api/employee/{employee_id}/report")
 def get_report(employee_id: int):
+
+    report_json = service.generate_report(employee_id)
 
     json_data = """
         {

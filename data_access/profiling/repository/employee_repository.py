@@ -57,9 +57,23 @@ def get_employees_to_evaluate(evaluator_id):
         return None
 
 
-def get_employee_feedbacks(employee_id, evaluator_id):
-    print(employee_id )
-    print(evaluator_id)
+def get_employee_feedbacks(employee_id):
+    print(employee_id)
+    connector = Neo4jConnector()
+    connector.connect()
+    query = """
+       MATCH (e:Employee {id: $employee_id})<-[:HAVE]->(f:Feedback)
+       RETURN COLLECT(f.text) AS feedbacks;
+        """
+    feedbacks = connector.find_by(query, {'employee_id': employee_id})
+    connector.close()
+    if feedbacks:
+        return feedbacks
+    else:
+        return None
+
+def get_employee_feedbacks_by_evaluator(employee_id,evaluator_id):
+    print(employee_id)
     connector = Neo4jConnector()
     connector.connect()
     query = """

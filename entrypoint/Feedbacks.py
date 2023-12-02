@@ -22,3 +22,8 @@ def validate_submitted_feedback(employee_id: int, evaluator_id: int, ):
 @router.get("/api/evaluators/{evaluator_id}/employees/{employee_id}/evaluations")
 def get_evaluation(evaluator_id: int, employee_id: int):
     return evaluationService.get_evaluation(evaluator_id, employee_id)
+
+
+@router.post("/api/evaluators/{evaluator_id}/employees/{employee_id}/rates")
+def validate_submitted_feedback(employee_id: int, evaluator_id: int, ):
+    return evaluationService.score_evaluations(employee_id,evaluator_id)
