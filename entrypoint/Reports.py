@@ -23,7 +23,7 @@ def generate_plots(employee_data):
     buffers = []
     attribute_stats = []
 
-    for attribute in ['Productivity', 'Teamwork']:
+    for attribute in ['Productivity', 'Teamwork']:##get all kpis
         fig, ax = plt.subplots(figsize=(6, 4))
 
         # Calculate statistics
@@ -148,7 +148,7 @@ def generate_pdf(data):
 
     return pdf_buffer
 
-@router.get("/api/employee/{employee_id}/report")
+@router.get("/api/employee/{employee_id}/report",tags=["reports"])
 def get_report(employee_id: int):
 
     report_json = service.generate_report(employee_id)

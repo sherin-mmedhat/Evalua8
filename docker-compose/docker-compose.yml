@@ -18,9 +18,9 @@ services:
     container_name: evalu8-mongodb
     ports:
       - "27017:27017"
-    volumes:
-      - ../data/kpi/data/db:/data/db
-    command: mongod --dbpath /data/db
+#    volumes:
+#      - ../data/kpi/data/db:/data/db
+#    command: mongod --dbpath /data/db
     networks:
       - neo4j-network
   evalu8-app:

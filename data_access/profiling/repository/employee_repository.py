@@ -23,12 +23,13 @@ def get_employees_hierarchy():
         MATCH (e:Employee)-[:BELONGS_TO]->(t:Team)
         WITH e, t, e.level AS employeeLevel
         ORDER BY employeeLevel desc
-        WITH t.name AS team,e.level AS level, COLLECT({ id: e.id, name: e.name, level: e.level , job_title: e.job_title }) AS employees
+        WITH t.name AS team,e.level AS level, COLLECT({ id: e.id, name: e.name, level: e.level , job_title: e.job_title , title_code: e.title_code  }) AS employees
         RETURN team, COLLECT({level: level, employees: employees}) AS employees
         ORDER BY team 
         """
     employee_data = connector.find_all(query)
-
+    print("sheryyyy")
+    print(employee_data)
     connector.close()
     if employee_data:
         return employee_data
@@ -78,14 +79,14 @@ def get_employee_feedbacks_by_evaluator(employee_id,evaluator_id):
     connector.connect()
     query = """
        MATCH (e:Employee {id: $employee_id})<-[:HAVE]->(f:Feedback {evaluator_id: $evaluator_id})
-       RETURN COLLECT(f.text) AS feedbacks;
+       RETURN COLLECT({ text: f.text, kpis: f.kpis }) AS feedbacks;
         """
     feedbacks = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id})
     connector.close()
     if feedbacks:
         return feedbacks
     else:
-        return None
+        return []
 ##todo filterss embedding part is missing
 def filter_employee_feedbacks(employee_id, evaluator_id, filters):
     connector = Neo4jConnector()

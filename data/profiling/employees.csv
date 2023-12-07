@@ -1,6 +1,6 @@
-id,name,level,job_title,department
-1,Sherin,Level-5,Senior Software Engineer,Engineering
-2,Jolie,Level-1,Software Engineer 1,Engineering
-3,Sara,Level-3,Front-end Software Engineer 2,Engineering
-4,Magdy,Level-1,Software Engineer 1,Engineering
-5,Nouran,Level-4,Product Manager,Product
+id,name,level,job_title,department,job_title_code
+1,Sherin,Level-5,Senior Software Engineer,Engineering,SSE
+2,Jolie,Level-1,Software Engineer 1,Engineering,SE1
+3,Sara,Level-3,Front-end Software Engineer 2,Engineering,Front_SE2
+4,Magdy,Level-1,Software Engineer 1,Engineering,SE1
+5,Nouran,Level-4,Product Manager,Product,PM
