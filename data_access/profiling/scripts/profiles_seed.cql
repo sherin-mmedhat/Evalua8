@@ -8,7 +8,8 @@ CREATE (:Employee {
   name: row.name,
   level: row.level,
   job_title: row.job_title,
-  department: row.department
+  department: row.department,
+  title_code: row.job_title_code
 });
 
  // Import Squads

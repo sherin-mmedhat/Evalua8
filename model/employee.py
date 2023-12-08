@@ -7,6 +7,7 @@ class Employee(BaseModel):
     level: str
     department: str
     job_title: str
+    title_code: str
     projects: List[str] = None
     squads: List[str] = None
     
@@ -21,6 +22,7 @@ class Employee(BaseModel):
                 level=employee_data.get('level'),
                 department=employee_data.get('department'),
                 job_title=employee_data.get('job_title'),
+                title_code=employee_data.get('title_code'),
                 projects=json_data.get('projects',[]),
                 squads=json_data.get('squads',[]),
             )

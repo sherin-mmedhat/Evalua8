@@ -8,7 +8,17 @@ router = APIRouter()
 service = EmployeeService()
 
 
-@router.get("/api/employee/{employee_id}")
+@router.get("/api/employees/hierarchy", tags=["profiling"])
+def get_hierarchy():
+    employee_hierarchy = service.get_hierarchy()
+    if employee_hierarchy:
+
+        return employee_hierarchy
+    else:
+        raise HTTPException(status_code=404, detail="no employee hierarchy found")
+
+
+@router.get("/api/employees/{employee_id}", tags=["profiling"])
 def get_details(employee_id: int):
   
     employee = service.get_details(employee_id)   
@@ -18,18 +28,7 @@ def get_details(employee_id: int):
     else:
         raise HTTPException(status_code=404, detail="Employee not found")
 
-    
-@router.get("/api/employees/hierarchy")
-def get_hierarchy():
-  
-    employee_hierarchy = service.get_hierarchy()   
-    if employee_hierarchy:
-        
-        return employee_hierarchy
-    else:
-        raise HTTPException(status_code=404, detail="no employee hierarchy found")
-
-@router.get("/api/evaluators/{evaluator_id}/employees-being-evaluated")
+@router.get("/api/evaluators/{evaluator_id}/employees-being-evaluated",tags=["profiling"])
 def get_employees_to_evaluate(evaluator_id: int):
       
     employee_to_evaluate = service.get_employees_to_evaluate(evaluator_id)
@@ -39,7 +38,7 @@ def get_employees_to_evaluate(evaluator_id: int):
     else:
         raise HTTPException(status_code=404, detail="no employees to evaluate")
 
-@router.get("/api/employees/{employee_id}/evaluators/{evaluator_id}/feedbacks")
+@router.get("/api/employees/{employee_id}/evaluators/{evaluator_id}/feedbacks",tags=["profiling"])
 def get_feedbacks(evaluator_id: int, employee_id: int):
     return service.get_employees_by_evaluator_feedbacks(employee_id,evaluator_id)
 

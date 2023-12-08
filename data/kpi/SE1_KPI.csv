@@ -1,0 +1,11 @@
+id,KPI,Question,Weight,Job_title,EM,TL,PM,QC,ME_BY,CL
+1,Advanced Productivity,Leading in project planning and getting things done.,0.5,Software Engineer 1,Yes,Yes,Yes,No,No,No
+2,Advanced Productivity,Helping improve the way the team works to increase productivity.,0.5,Software Engineer 1,Yes,Yes,No,No,Yes,No
+3,Advanced Productivity,Solving complex problems and helping choose the right solutions.,0.5,Software Engineer 1,Yes,Yes,Yes,No,Yes,No
+4,Advanced Productivity,Finding and using better tools and techniques for the team.,0.5,Software Engineer 1,Yes,Yes,No,No,Yes,No
+5,Advanced Productivity,Always delivering high-quality work.,0.5,Software Engineer 1,Yes,Yes,Yes,Yes,No,No
+6,Dependability,Ability to smoothly adapt to technical and administrative changes.,0.5,Software Engineer 1,Yes,Yes,Yes,No,No,No
+7,Dependability,Ability to provide reliable estimates for tasks.,0.5,Software Engineer 1,Yes,Yes,Yes,Yes,No,No
+8,Dependability,Efficiently following/ setting best practices beyond defined guidelines and yet within practical limits.,0.5,Software Engineer 1,Yes,Yes,No,No,No,No
+14,Teamwork,Working well with others and helping create a positive team environment.,0.5,Software Engineer 1,Yes,Yes,Yes,Yes,Yes,Yes
+15,Teamwork,Adding valuable input to team discussions and decisions.,0.5,Software Engineer 1,Yes,Yes,Yes,Yes,Yes,Yes

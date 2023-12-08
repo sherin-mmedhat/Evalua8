@@ -16,7 +16,7 @@ KPI = db.kpi_collection
 result = KPI.delete_many({})
 
 # Specify the path to your CSV file
-csv_file_path = 'data/profiling/KPI.csv'
+csv_file_path = '../data/profiling/KPI.csv'
 
 # Read data from CSV file
 with open(csv_file_path, 'r') as csv_file:
