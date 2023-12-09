@@ -1,28 +1,30 @@
-from model.employee import Employee
+# from model.employee import Employee
 import openai
 import json
 from decouple import config
 
-from data_access.profiling.repository import employee_repository
-from service.employee_service import EmployeeService
+# from data_access.profiling.repository import employee_repository
+# from service.employee_service import EmployeeService
 
 
 class ReportingService: 
 
     def __init__(self):
-        openai.api_key= config('OPEN_API_KEY')
+        openai.api_key= "Key"
 
-    def generate_report(self, employee_id):
+    def generate_report(self, feedback_data, employee_id):
 
 
-          employee_json = employee_repository.get_employee_details(employee_id)
-          employee = Employee.from_json(employee_json)
-          feedbacks = employee_repository.get_employee_feedbacks(employee_id)
-          employee_name =employee.name
-          feedback= [feedback_object for feedback_object in feedbacks['feedbacks']]
+        #   employee_json = employee_repository.get_employee_details(employee_id)
+        #   employee = Employee.from_json(employee_json)
+        #   feedbacks = employee_repository.get_employee_feedbacks(employee_id)
+          feedback = feedback_data
+        #   employee_name = employee.name
+          employee_name = "John"
+        #   feedback = [feedback_object for feedback_object in feedbacks['feedbacks']]
           responses = []
           prompts = [
-              f"For {employee_name}. What are his strengths based on the feedback? {feedback}. Give me 2 points ",
+              f"For {employee_name}. What are his strengths based on the feedback? {feedback}. Give me 2 points",
               f"For {employee_name}. What are his weaknesses based on the feedback? {feedback}. Give me 2 points ",
               f"For {employee_name}. What should he work on based on the feedback? {feedback}"
           ]
@@ -52,9 +54,9 @@ feedback_data = [
     "John tends to procrastinate on tasks and misses deadlines.",
     "John should prioritize time management and meet deadlines consistently."
 ]
-# reporting_service = ReportingService()
+reporting_service = ReportingService()
 
-# report_json = reporting_service.generate_report(2)
+report_json = reporting_service.generate_report(feedback_data, 2)
 
 # Print the JSON report
-# print(json.dumps(report_json, indent=2))
+print(json.dumps(report_json, indent=2))
