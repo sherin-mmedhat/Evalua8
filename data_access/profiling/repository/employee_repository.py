@@ -99,7 +99,8 @@ def get_employee_feedbacks_by_evaluator_grouped_by_kpis(employee_id, evaluator_i
        MATCH (e:Employee {id: $employee_id})<-[:HAVE]->(f:Feedback {evaluator_id: $evaluator_id})
        WITH e, f
        UNWIND f.kpis AS kpi
-       RETURN kpi, COLLECT(f.text) AS feedbacks
+       WITH e, kpi, f.text AS feedbackText
+       RETURN kpi, COLLECT(feedbackText) AS feedbacks
         """
     feedbacks = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id})
     connector.close()
@@ -115,7 +116,7 @@ def filter_employee_feedbacks(employee_id, evaluator_id, filters):
     query = """
        MATCH (e:Employee {id: $employee_id})<-[:HAVE]->(f:Feedback {evaluator_id: $evaluator_id})
        WHERE gds.alpha.similarity.cosine(f.embedding, $filters) > $similarityThreshold
-        RETURN COLLECT({ text: f.text, kpis: f.kpis }) AS feedbacks;
+       RETURN COLLECT({ text: f.text, kpis: f.kpis }) AS feedbacks;
         """
     feedbacks = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id, 'filters': filters})
     connector.close()
