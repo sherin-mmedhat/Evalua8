@@ -1,7 +1,8 @@
 from decouple import config
 from langchain.chat_models import ChatOpenAI
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.schema.messages import SystemMessage
 
 from data_access.profiling.repository import evaluation_repository
 from data_access.profiling.repository import employee_repository
@@ -38,41 +39,72 @@ class EvaluationService:
 
         llm_model = "gpt-3.5-turbo"
 
+        system_message = SystemMessage(content=(
+            """
+            You are now tasked with scoring an employee's performance on a scale of 1 to 10 (1 being the lowest and 10 being the highest) for each of the specified competencies. Your evaluation should be based solely on the information provided in the employee feedback.
+
+            **It's important to remain objective and unbiased in your assessment. Focus only on the feedback provided and avoid making assumptions or inferences not directly supported by the text.**
+
+            **Scoring Format:**
+
+            1 - Unsatisfactory
+            2 - Below Average
+            3 - Average
+            4 - Above Average
+            5 - Neutral (Insufficient information to score)
+            6 - Good
+            7 - Very Good
+            8 - Excellent
+            9 - Outstanding
+            10 - Exceptional
+
+            Please provide a numerical rating for each competency. If you find that a competency cannot be adequately answered from the feedback, assign a neutral score of 5.
+
+            **Remember:** Your goal is to provide a fair and accurate assessment based on the available information.
+            """
+        ))
+
         response_schemas = [
             ResponseSchema(
                 name="response",
-                description="""array contains question,score  in the following format: [
-            {{ "question": string // Each question from the given questions.', "score": int // number representing the score given for each question according to feedback .',  }}
-        ]
-        """,
+                description="""
+                array contains question, score in the following format: [
+                {{ "question": string // Each competency from the given competencies.',
+                "score": int // number representing the score given for each competency according to feedback.', }}
+            ]
+            """,
             )
         ]
-
-        feedbacks_str = ', '.join(feedbacks)
-        questions_str = ', '.join(questions)
 
         output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
         format_instructions = output_parser.get_format_instructions().replace(
             '"response": string', '"response": array of objects'
         )
-        template_string = """Given the following feedback about an employee, please rate their performance on a scale of 1 to 10 (1 being the lowest and 10 being the highest) for each of the specified questions:
-            Inputs:
-            - Feedback: A list of employee feedbacks {feedbacks_str}.
-            - Questions: A list of questions {questions_str}.
-            provide a numerical rating (1-10) for each question based on the feedback given. If a question cannot be adequately answered from the feedback, you may assign a neutral score
-            Format the response output as of JSON array, having the following keys:
-            {format_instructions}
-            The response list will depend on the number of questions.
+
+        human_message_prompt_template = HumanMessagePromptTemplate.from_template(
             """
+            **Feedback:**
+            {feedback_list}
 
-        prompt_template = ChatPromptTemplate.from_template(template_string)
+            **Competencies:**
+            {question_list}
 
-        messages = prompt_template.format_messages(feedbacks_str=feedbacks_str,
-                                                   questions_str=questions_str,
-                                                   format_instructions=format_instructions)
+            **format_instructions**
+            {format_instructions}
+            """
+        )
+
+        feedbacks_str = ', '.join(feedbacks)
+        questions_str = ', '.join(questions)
+
+        chat_prompt_template = ChatPromptTemplate.from_messages([system_message, human_message_prompt_template])
+
+        formatted_user_input = chat_prompt_template.format_messages(
+            feedback_list=feedbacks_str, question_list=questions_str, format_instructions=format_instructions
+        )
 
         chat = ChatOpenAI(temperature=0.0, model=llm_model, openai_api_key=self._open_Api_key)
-        response = chat(messages)
+        response = chat(formatted_user_input)
 
         if response and response.content:
             output_dict = output_parser.parse(response.content)

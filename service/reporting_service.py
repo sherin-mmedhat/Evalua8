@@ -3,8 +3,9 @@ import openai
 import json
 from decouple import config
 
-# from data_access.profiling.repository import employee_repository
-# from service.employee_service import EmployeeService
+from data_access.profiling.repository import employee_repository
+from data_access.reporting.repository import reporting_repository
+from service.employee_service import EmployeeService
 
 
 class ReportingService: 
@@ -45,7 +46,8 @@ class ReportingService:
               "weaknesses": responses[1],
               "areas_for_improvement": responses[2]
           }
-          return report_json
+          pdf_buffer = reporting_repository.generate_pdf(report_json)
+          return pdf_buffer
 
 # Example usage
 employee_name = "John Doe"
