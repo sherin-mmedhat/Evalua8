@@ -16,9 +16,9 @@ class FeedbackService:
 
         kpi_data_list = kpi_service.find_by_job_title(employee_details.title_code)
 
-        kpis = set([kpi["KPI"] for kpi in kpi_data_list])
+        kpis = list(set([kpi["KPI"] for kpi in kpi_data_list]))
         
-        category_label = categorizing_service.categorize_text(kpis, feedback)
+        category_label = categorizing_service.categorize_text(kpis, [feedback])
         print("Feedback category:", category_label)
         
         feedback_id = feedback_repository.submit_feedback(evaluator_id=evaluator_id, feedback=feedback,

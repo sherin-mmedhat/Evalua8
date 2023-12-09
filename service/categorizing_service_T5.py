@@ -23,8 +23,11 @@ class CategorizingUsingTransformersService:
                 labels.append(predicted_categories)
             else:
                 labels.append(['Does not belong to any category'])
-        
-        return labels
+
+        flattened_set = set(element for sublist in labels for element in sublist)
+
+        flattened_labels_unique = list(flattened_set)
+        return flattened_labels_unique
 
 # Example usage
 categorizing_service = CategorizingUsingTransformersService()
