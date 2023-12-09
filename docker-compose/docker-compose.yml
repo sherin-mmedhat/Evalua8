@@ -11,6 +11,7 @@ services:
       - ../data/profiling:/import  # Mount a volume for the import directory 
     environment:
       NEO4J_AUTH: neo4j/password  # Set your desired password
+      NEO4JLABS_PLUGINS: '["graph-data-science"]'
     networks:
       - neo4j-network  # If you want to use a Docker network
   mongodb:

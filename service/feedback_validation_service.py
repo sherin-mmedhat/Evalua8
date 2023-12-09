@@ -1,5 +1,3 @@
-from itertools import chain
-
 from decouple import config
 from langchain.chat_models import ChatOpenAI
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
@@ -10,11 +8,13 @@ from data_access.profiling.repository import evaluation_repository
 # from model.feedback_metadata import FeedbackMetadata
 from service.employee_service import EmployeeService
 from service.kpi_service import KpiService
+from service.openAI_service import OpenAIService
 
 # from langchain.llms import OpenAI
 # from langchain import PromptTemplate, LLMChain
 kpi_service = KpiService()
 employee_service = EmployeeService()
+openAi_service = OpenAIService()
 
 
 class FeedbackValidationService:
@@ -23,24 +23,25 @@ class FeedbackValidationService:
 
     def validate_feedbacks(self, employee_id, evaluator_id):
 
-        feedbacks_object = employee_service.get_employees_by_evaluator_feedbacks(employee_id, evaluator_id)
+        kpi_feedbacks_dic = employee_service.get_employees_by_evaluator_feedbacks_grouped_by_kpis(employee_id, evaluator_id)
         evaluator_object = employee_service.get_details(evaluator_id)
         employee_object = employee_service.get_details(employee_id)
+        for kpi_feedbacks in kpi_feedbacks_dic:
+            self.validate_feedbacks_per_kpi(evaluator_object,employee_object,kpi_feedbacks)
+        return "job finished validating "
 
-        kpis = list(chain.from_iterable(feedback['kpis'] for feedback in feedbacks_object['feedbacks']))
-        feedbacks = [feedback["text"] for feedback in feedbacks_object["feedbacks"]]
+    def validate_feedbacks_per_kpi(self,evaluator,employee,kpi_feedbacks):
+        kpi = kpi_feedbacks["kpi"]
+        feedbacks = [feedback["text"] for feedback in kpi_feedbacks["feedbacks"]]
+        kpi_questions = kpi_service.find_by_employee_job_title_filtered_questions_by_evaluator_title(
+            employee.title_code, evaluator.title_code,kpi)  ##todo must get mentor and mentor by relation
+        questions_list = [kpi["Question"] for kpi in kpi_questions]
 
-        kpi_object = kpi_service.find_by_employee_job_title_filtered_questions_by_evaluator_title(
-            employee_object.title_code, evaluator_object.title_code) ##todo must get mentor and mentor by relation
-
-        questions_list = [kpi["Question"] for kpi in kpi_object]
-        ##todo  we cant filter here but we can map reduce if feedbacks size is max
-        validated_response = self.are_feedbacks_sufficient(feedbacks, kpis, questions_list)
+        validated_response = self.are_feedbacks_sufficient(feedbacks, kpi, questions_list)
 
         for validated_object in validated_response:
-            evaluation_repository.update_evaluation_validation(employee_id, evaluator_id, validated_object["question"],
-                                                               validated_object["is_sufficient"], kpis)
-        return validated_response
+            evaluation_repository.update_evaluation_validation(employee.id, evaluator.id, validated_object["question"],
+                                                               validated_object["is_sufficient"], [kpi])
 
     def are_feedbacks_sufficient(self, feedbacks, kpis, questions):
 
@@ -67,8 +68,6 @@ class FeedbackValidationService:
             """)
         )
 
-        # x communicated well when there was an issue and was very constructive to resolve the issue, addresed many suggested answer and reached the optimal one
-        # x is not communicating well, when y asked him to check his emails he answered rudly and he doesnt have time , while this email is urgently need reply and he is very late replying for almost 1 week, he is not helpful person to his team and always get away when asked to help others,v in his team asked him to push the code he ignored his request causing v to not able to finish as his task depends on x changes
         response_schemas = [
             ResponseSchema(
                 name="response",
@@ -106,7 +105,7 @@ class FeedbackValidationService:
         formatted_user_input = chat_prompt_template.format_messages(
             feedback_list=feedbacks_str, kpi_list=kpis_str, question_list=questions_str, format_instructions=format_instructions
         )
-
+        print(formatted_user_input)
         chat = ChatOpenAI(temperature=0.0, model=llm_model, openai_api_key=self._open_Api_key)
         response = chat(formatted_user_input)
         print(response.content)

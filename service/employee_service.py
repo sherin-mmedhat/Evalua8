@@ -26,3 +26,14 @@ class EmployeeService:
          employees_feedbacks = employee_repository.get_employee_feedbacks_by_evaluator(employee_id, evaluator_id)
          print(employees_feedbacks)
          return employees_feedbacks
+
+##todo to be used in reports
+    def filters_employees_by_evaluator_feedbacks(self,employee_id: int , evaluator_id: int):
+         employees_feedbacks=employee_repository.filter_employee_feedbacks(employee_id,evaluator_id, "What are his strengths based on the feedback?")
+         print(employees_feedbacks)
+         return employees_feedbacks
+
+    def get_employees_by_evaluator_feedbacks_grouped_by_kpis(self,employee_id: int , evaluator_id: int):
+         employees_feedbacks = employee_repository.get_employee_feedbacks_by_evaluator_grouped_by_kpis(employee_id, evaluator_id)
+         print(employees_feedbacks)
+         return employees_feedbacks

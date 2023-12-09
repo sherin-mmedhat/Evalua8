@@ -34,7 +34,7 @@ def get_kpi_by_job_title(Job_title: str):
         raise HTTPException(status_code=404, detail=f"No employees found with job title:{Job_title}")
 
 @router.get("/api/kpi/{employee_job_title}/{evaluator_job_title}",tags=["KPI"])
-def get_kpi_for_job_title_and_evaluator(employee_job_title: str, evaluator_job_title: str):
+def get_kpi_for_job_title_and_evaluator(employee_job_title: str, evaluator_job_title: str, kpi :str):
 
     #  todo add validation step to call profile an make sure there is a connection between evlauator
     #   and employee before proceeding [working in same squad or mentor , mentored by ]
@@ -43,7 +43,7 @@ def get_kpi_for_job_title_and_evaluator(employee_job_title: str, evaluator_job_t
     #  update is_mentor flags
     #   update  is_mentored_by = false # todo should call profile to know if evluator is mentored by employee
     kpi_data_list = kpi_service.find_by_employee_job_title_filtered_questions_by_evaluator_title(employee_job_title,
-                                                                                                 evaluator_job_title)  # default will be colegue(CL)
+                                                                                                 evaluator_job_title,kpi)  # default will be colegue(CL)
     if kpi_data_list:
         return kpi_data_list
     else:

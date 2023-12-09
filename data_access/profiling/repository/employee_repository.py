@@ -16,6 +16,7 @@ def get_employee_details(employee_id):
     else:
         return None
 
+
 def get_employees_hierarchy():
     connector = Neo4jConnector()
     connector.connect()
@@ -35,6 +36,7 @@ def get_employees_hierarchy():
         return employee_data
     else:
         return None
+
 
 def get_employees_to_evaluate(evaluator_id):
     connector = Neo4jConnector()
@@ -73,7 +75,8 @@ def get_employee_feedbacks(employee_id):
     else:
         return None
 
-def get_employee_feedbacks_by_evaluator(employee_id,evaluator_id):
+
+def get_employee_feedbacks_by_evaluator(employee_id, evaluator_id):
     print(employee_id)
     connector = Neo4jConnector()
     connector.connect()
@@ -87,20 +90,40 @@ def get_employee_feedbacks_by_evaluator(employee_id,evaluator_id):
         return feedbacks
     else:
         return []
-##todo filterss embedding part is missing
-def filter_employee_feedbacks(employee_id, evaluator_id, filters):
+
+def get_employee_feedbacks_by_evaluator_grouped_by_kpis(employee_id, evaluator_id):
+    print(employee_id)
     connector = Neo4jConnector()
     connector.connect()
     query = """
-       MATCH (f:Feedback {evaluator_id: $evaluator_id})<-[:HAVE](e:Employee{ id : $employee_id}]
-       RETURN COLLECT(f.feedback) AS feedbacks;
+       MATCH (e:Employee {id: $employee_id})<-[:HAVE]->(f:Feedback {evaluator_id: $evaluator_id})
+       WITH e, f
+       UNWIND f.kpis AS kpi
+       RETURN kpi, COLLECT(f.text) AS feedbacks
         """
     feedbacks = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id})
     connector.close()
     if feedbacks:
         return feedbacks
     else:
+        return []
+
+##todo filterss embedding part is missing
+def filter_employee_feedbacks(employee_id, evaluator_id, filters):
+    connector = Neo4jConnector()
+    connector.connect()
+    query = """
+       MATCH (e:Employee {id: $employee_id})<-[:HAVE]->(f:Feedback {evaluator_id: $evaluator_id})
+       WHERE gds.alpha.similarity.cosine(f.embedding, $filters) > $similarityThreshold
+        RETURN COLLECT({ text: f.text, kpis: f.kpis }) AS feedbacks;
+        """
+    feedbacks = connector.find_by(query, {'employee_id': employee_id, 'evaluator_id': evaluator_id, 'filters': filters})
+    connector.close()
+    if feedbacks:
+        return feedbacks
+    else:
         return None
+
 
 def create_feedback_relation(employee_id, feedback_id):
     connector = Neo4jConnector()

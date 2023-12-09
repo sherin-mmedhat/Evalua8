@@ -13,6 +13,7 @@ class KpiService:
 
     def find_by_employee_job_title_filtered_questions_by_evaluator_title(self, employee_job_title_code: str,
                                                                          evaluator_job_title_code: str,
+                                                                         kpi:str,
                                                                          is_mentor=False, is_mentored_by=False
                                                                          ):
         titles_exists_to_filter = list(Kpi_repository.get_all_filtered_titles_columns(
@@ -21,7 +22,7 @@ class KpiService:
         filter_questions_by = self.filter_question_by_evaluator_title(evaluator_job_title_code, is_mentor,
                                                                       is_mentored_by, titles_exists_to_filter)
 
-        query = {"$or": [{key: "Yes"} for key in filter_questions_by]}
+        query = {"$or": [{key: "Yes","KPI": kpi} for key in filter_questions_by]}
         print(query)
         return list(Kpi_repository.get_kpis_by_title_code(employee_job_title_code, query))
 

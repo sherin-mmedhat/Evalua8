@@ -7,6 +7,9 @@ from langchain.schema.messages import SystemMessage
 from data_access.profiling.repository import evaluation_repository
 from data_access.profiling.repository import employee_repository
 from model.evaluation import EvaluationList
+from service.feedback_validation_service import openAi_service
+
+
 class EvaluationService:
 
     def __init__(self):
