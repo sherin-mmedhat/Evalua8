@@ -41,7 +41,7 @@ class EvaluationService:
 
         system_message = SystemMessage(content=(
             """
-            You are now tasked with scoring an employee's performance on a scale of 1 to 10 (1 being the lowest and 10 being the highest) for each of the specified questions. Your evaluation should be based solely on the information provided in the employee feedback.
+            You are now tasked with scoring an employee's performance on a scale of 1 to 10 (1 being the lowest and 10 being the highest) for each of the specified competencies. Your evaluation should be based solely on the information provided in the employee feedback.
 
             **It's important to remain objective and unbiased in your assessment. Focus only on the feedback provided and avoid making assumptions or inferences not directly supported by the text.**
 
@@ -58,7 +58,7 @@ class EvaluationService:
             9 - Outstanding
             10 - Exceptional
 
-            Please provide a numerical rating for each question. If you find that a question cannot be adequately answered from the feedback, assign a neutral score of 5.
+            Please provide a numerical rating for each competency. If you find that a competency cannot be adequately answered from the feedback, assign a neutral score of 5.
 
             **Remember:** Your goal is to provide a fair and accurate assessment based on the available information.
             """
@@ -69,8 +69,8 @@ class EvaluationService:
                 name="response",
                 description="""
                 array contains question, score in the following format: [
-                {{ "question": string // Each question from the given questions.',
-                "score": int // number representing the score given for each question according to feedback.', }}
+                {{ "question": string // Each competency from the given competencies.',
+                "score": int // number representing the score given for each competency according to feedback.', }}
             ]
             """,
             )
@@ -86,7 +86,7 @@ class EvaluationService:
             **Feedback:**
             {feedback_list}
 
-            **Questions:**
+            **Competencies:**
             {question_list}
 
             **format_instructions**

@@ -52,14 +52,14 @@ class FeedbackValidationService:
 
             * **Clarity:** Evaluate if the feedback is clear, concise, and easy to understand.
             * **Specificity:** Assess whether the feedback includes specific examples and details.
-            * **Informativeness:** Determine if the feedback provides enough information to answer questions about the employee's competency.
+            * **Informativeness:** Determine if the feedback provides enough information to answer competencies about the employee's competency.
             * **Alignment with competency:** Evaluate whether the feedback addresses the relevant aspects of the employee's competency, as defined in the provided KPIs.
 
             You must consider both positive and negative feedback. Your task is to provide:
 
             * A list of employee feedback entries.
             * A list of relevant KPI categories.
-            * A list of questions to be answered about the employee's competency.
+            * A list of competencies to be answered about the employee's competency.
 
             Ensure that your input covers a diverse range of feedback types to allow the system to provide a comprehensive analysis. Thank you for your assistance!
             """)
@@ -70,8 +70,8 @@ class FeedbackValidationService:
         response_schemas = [
             ResponseSchema(
                 name="response",
-                description="""array contains question,is_sufficient and Suggestions in the following format: [
-            {{ "question": string // Each question from the given questions.', "is_sufficient": boolean // Boolean indicating whether any feedback is sufficient to completely and clearly answer the question without needing additional information.',  ,"suggestions": [string] // Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.' }}
+                description="""array contains competency,is_sufficient and Suggestions in the following format: [
+            {{ "question": string // Each competency from the given competencies.', "is_sufficient": boolean // Boolean indicating whether any feedback is sufficient to completely and clearly answer the competency without needing additional information.',  ,"suggestions": [string] // Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.' }}
         ]
         """,
             )
@@ -88,7 +88,7 @@ class FeedbackValidationService:
             **KPIs:**
             {kpi_list}
 
-            **Questions:**
+            **Competencies:**
             {question_list}
 
             **format_instructions**
