@@ -8,8 +8,9 @@ from data_access.profiling.repository import evaluation_repository
 from data_access.profiling.repository import employee_repository
 from model.evaluation import EvaluationList
 from service.feedback_validation_service import openAi_service
+from service.openAI_service import OpenAIService
 
-
+openAi_service= OpenAIService()
 class EvaluationService:
 
     def __init__(self):
@@ -40,7 +41,7 @@ class EvaluationService:
 
     def give_rates_for_questions(self, feedbacks, questions):
 
-        llm_model = "gpt-3.5-turbo"
+        # llm_model = "gpt-3.5-turbo"
 
         system_message = SystemMessage(content=(
             """
@@ -100,15 +101,20 @@ class EvaluationService:
         feedbacks_str = ', '.join(feedbacks)
         questions_str = ', '.join(questions)
 
-        chat_prompt_template = ChatPromptTemplate.from_messages([system_message, human_message_prompt_template])
+        # chat_prompt_template = ChatPromptTemplate.from_messages([system_message, human_message_prompt_template])
 
-        formatted_user_input = chat_prompt_template.format_messages(
-            feedback_list=feedbacks_str, question_list=questions_str, format_instructions=format_instructions
-        )
+        # formatted_user_input = chat_prompt_template.format_messages(
+        #     feedback_list=feedbacks_str, question_list=questions_str, format_instructions=format_instructions
+        # )
 
-        chat = ChatOpenAI(temperature=0.0, model=llm_model, openai_api_key=self._open_Api_key)
-        response = chat(formatted_user_input)
-
+        #chat = ChatOpenAI(temperature=0.0, model=llm_model, openai_api_key=self._open_Api_key)
+        # response = chat(formatted_user_input)
+        input_var = {
+            "feedback_list" : feedbacks_str,
+            "question_list" : questions_str,
+            "format_instructions" : format_instructions
+        }
+        response = openAi_service.call_openAI(system_message,human_message_prompt_template, input_var)
         if response and response.content:
             output_dict = output_parser.parse(response.content)
             print(output_dict)
