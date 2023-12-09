@@ -13,11 +13,7 @@ class FeedbackService:
         employee_details= employee_service.get_details(employee_id)
 
         kpi_data_list = kpi_service.find_by_job_title(employee_details.title_code)
-
-        kpis = set([kpi["KPI"] for kpi in kpi_data_list])
-        
-        category_label = categorizing_service.categorize_text(kpis, feedback)
-        
+        ##todo take kpis list and  feedback as inputs call categorise method , that will be used in kpis variable in submit_feedback
         feedback_id = feedback_repository.submit_feedback(evaluator_id=evaluator_id, feedback=feedback,
                                                           kpis=kpis)
         employee_repository.create_feedback_relation(employee_id=employee_id, feedback_id=feedback_id)
