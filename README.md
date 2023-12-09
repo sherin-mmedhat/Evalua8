@@ -20,3 +20,7 @@ MONGO_DB_PORT=27017
 go and run the script in this file data_access/kpi/KPI_migration.ipynb
 
 ## to access the neo4j database 
+http://172.22.0.3:7474/browser/
+
+## to access swagger for endpoint interactions  
+http://127.0.0.1:5000/docs
