@@ -72,8 +72,8 @@ class FeedbackValidationService:
         response_schemas = [
             ResponseSchema(
                 name="response",
-                description="""array contains competency,is_sufficient and Suggestions in the following format: [
-            {{ "question": string // Each competency from the given competencies.', "is_sufficient": boolean // Boolean indicating whether any feedback is sufficient to completely and clearly answer the competency without needing additional information.',  ,"suggestions": [string] // Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.' }}
+                description="""array contains question,is_sufficient and Suggestions in the following format: [
+            {{ "question": string // Each question from the given competencies.', "is_sufficient": boolean // Boolean indicating whether any feedback is sufficient to completely and clearly answer the competency without needing additional information.',  ,"suggestions": [string] // Suggestions with a follow up question to enhance feedback for better clarity and specificity, and dont repeat the question in the inputs, else if part is covered mentioned what aspect is missing from the feedback.' }}
         ]
         """,
             )
@@ -90,7 +90,7 @@ class FeedbackValidationService:
             **KPIs:**
             {kpi_list}
 
-            **Competencies:**
+            **Questions:**
             {question_list}
 
             **format_instructions**
