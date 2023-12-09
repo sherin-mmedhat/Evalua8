@@ -62,6 +62,8 @@ class FeedbackValidationService:
             * A list of competencies to be answered about the employee's competency.
 
             Ensure that your input covers a diverse range of feedback types to allow the system to provide a comprehensive analysis. Thank you for your assistance!
+
+            **Remember, your evaluation should be based on the provided KPIs and the diverse range of feedback provided.**
             """)
         )
 
@@ -93,8 +95,6 @@ class FeedbackValidationService:
 
             **format_instructions**
             {format_instructions}
-
-            **Remember, your evaluation should be based on the provided KPIs and the diverse range of feedback provided.**
             """
         )
 
